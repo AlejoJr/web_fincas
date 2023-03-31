@@ -5,74 +5,119 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-        html {
-            margin: 0;
-            padding: 0;
-            font-size: 62.5%;
-        }
-
-        body {
-            max-width: 800px;
-            min-width: 300px;
-            margin: 0 auto;
-            padding: 20px 10px;
-            font-size: 14px;
-            font-size: 1.4em;
-        }
-
-        h1 {
-            font-size: 1.8em;
-        }
-
-        .demo {
-            overflow: auto;
-            border: 1px solid silver;
-            min-height: 100px;
-        }
-    </style>
     <link rel="stylesheet" href="../web_fincas/dist/themes/default/style.min.css" />
-    <link rel="stylesheet" href="../web_fincas/dist/css/jquery/jquery-ui.min.css" />
-    <!--<link rel="stylesheet" href="../web_fincas/dist/css/bootstrap/bootstrap.min.css" />-->
+    <!--<link rel="stylesheet" href="../web_fincas/dist/css/jquery/jquery-ui.min.css" />-->
+    <link rel="stylesheet" href="../web_fincas/dist/css/bootstrap/bootstrap.min.css" />
     <script src="dist/js/jquery/jquery-3.6.3.min.js" type="text/javascript"></script>
     <script src="dist/js/jquery/jquery-ui.min.js" type="text/javascript"></script>
     <script src="../web_fincas/dist/js/jstree/jstree.min.js"></script>
+    <script src="../web_fincas/js/services/users.js"></script>
 
     <title>Fincas</title>
-    <script src="../web_fincas/js/services/users.js"></script>
 </head>
 
 <body>
-
-    
-    <select name="Fincas" id="fincasID">
-        <option value="-1">- Seleccione -</option>
-    </select>
-
-    <h2 id="nameFincaId">Nombre finca</h2>
-
-    <div id="dialog-form" title="Nueva carpeta">
-        <form>
-            <p id="idRuta"></p>
-          <fieldset>
-            <label for="name">Nombre</label>
-            <input type="text"
-                   name="name" 
-                   id="nameFolder" onkeypress="return check(event)"
-                   class="text ui-widget-content ui-corner-all" 
-                   style="width: 230px">
-            <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-          </fieldset>
-        </form>
+    <div class="container">
+        <div class="row justify-content-md-center mt-5 mb-5 ">
+            <div class="col-4 justify-tes border-bottom border-dark">
+              <h1 id="idNameFinca" class="text-center"></h1>
+            </div>
+        </div>
+        
+        <div class="row justify-content-md-start mb-4">
+            <div class="col-4">
+                <select id="fincasID" class="form-select"  name="Fincas">
+                    <option value="-1">- Seleccione -</option>
+                </select> 
+            </div>
+        </div>
+        <div class="row justify-content-md-center">
+            <div class="col-4">
+                <div class="row row-cols-2 gx-3 gy-3">
+                    <div class="d-grid gap-2 mx-auto">
+                        <button id="CrearCarpetaId" 
+                                type="button"
+                                class="btn btn-outline-primary"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalNewFolder">
+                                Crear carpeta
+                        </button>
+                    </div>
+                    <div class="d-grid gap-2 mx-auto">
+                        <button id="EliminarCarpetaId"
+                                disabled 
+                                type="button" 
+                                class="btn btn-outline-danger"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalDeleteFolder">
+                                Eliminar carpeta
+                        </button>
+                    </div>
+                    <div class="d-grid gap-2 mx-auto">
+                        <button type="button" class="btn btn-outline-primary"> Subir archivo</button>
+                    </div>
+                    <div class="d-grid gap-2 mx-auto">
+                        <button type="button" class="btn btn-outline-danger"> Eliminar archivo</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8 border border-dark bg-light">
+                <div id="data" class="demo"></div>
+            </div>
+        </div>
     </div>
-    <div id="dialog-confirm" title="Eliminar Carpeta">
-            <p id="idConfirm"></p>
+
+    <!-- Ventana para (Crear) una nueva carpeta -->
+    <div class="modal fade" id="modalNewFolder" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Nueva Carpeta</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <p id="pathFolderSelected"></p>
+                    <div class="mb-3">
+                        <input id="nameFolder"
+                            type="text"
+                            class="form-control" 
+                            onkeypress="return check(event)"
+                            placeholder="Nombre de carpeta"
+                            required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button id="cerrar" type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button id="crear" type="button" class="btn btn-outline-primary">Crear</button>
+            </form>
+            </div>
+        </div>
+        </div>
     </div>
 
-    <button id="CrearCarpetaId">Crear carpeta</button>
-    <button id="EliminarCarpetaId" disabled>Eliminar carpeta</button>
-
-    <div id="data" class="demo"></div>
+    <!-- Ventana para (Eliminar) una carpeta -->
+    <div class="modal fade" id="modalDeleteFolder" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Eliminar Carpeta</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <p id="idConfirm"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button id="cerrar" type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button id="eliminar" type="button" class="btn btn-outline-danger">Eliminar</button>
+            </form>
+            </div>
+        </div>
+        </div>
+    </div>
 
     <script src="../web_fincas/js/services/directories.js"></script>
     <script src="dist/js/bootstrap/bootstrap.bundle.min.js"></script>
